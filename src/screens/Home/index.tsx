@@ -12,8 +12,6 @@ import { useSpring, animated } from '@react-spring/native'
 
 const Tab = createMaterialTopTabNavigator()
 
-
-
 const Home = () => {
 
   const screens = [
@@ -28,14 +26,6 @@ const Home = () => {
       tabBarPosition='bottom'
       screenOptions={{
         swipeEnabled: false,
-        tabBarActiveTintColor: Color.primary,
-        tabBarInactiveTintColor: Color.rgb155,
-        tabBarPressColor: Color.transparent,
-        tabBarStyle: { height: 60, backgroundColor: Color.white, overflow: 'visible' },
-        tabBarLabelStyle: {
-          fontSize: 10,
-          textTransform: 'none'
-        }
       }}
       tabBar={props => <BottomTab {...props} />}
     >
@@ -110,7 +100,9 @@ const BottomTab = (props: MaterialTopTabBarProps & { onPressQr?: VoidFunction })
 
       <View className='flex-1 relative'>
         <View className='w-full absolute -top-4 bottom-0 flex-col items-center'>
-          <Pressable className='w-14 h-14 rounded-full bg-red-500 border-4 border-white'></Pressable>
+          <Pressable className='w-14 h-14 rounded-full border-4 border-white' style={{ backgroundColor: Color.primary }}>
+
+          </Pressable>
         </View>
       </View>
 
