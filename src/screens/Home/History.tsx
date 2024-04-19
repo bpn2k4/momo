@@ -2,6 +2,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { useTranslation } from 'react-i18next'
 import { Text, View } from 'react-native'
 
+import ItemHistory from '@components/ItemHistory'
+
 const Tab = createMaterialTopTabNavigator()
 
 const HistoryTypes = {
@@ -13,8 +15,8 @@ const TabItem = (props: TabProps) => {
   const { type } = props
 
   return (
-    <View className='flex-1'>
-      <Text>{type}</Text>
+    <View className='flex-1 flex-col'>
+      <ItemHistory />
     </View>
   )
 }
@@ -36,6 +38,7 @@ const History = () => {
       <Tab.Navigator>
         {tabs.map(({ name, Component }, index) => (
           <Tab.Screen
+            key={name}
             name={name}
             component={Component} />
         ))}

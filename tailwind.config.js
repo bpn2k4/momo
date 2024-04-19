@@ -7,6 +7,15 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    colors: {
+      rgb: {
+        50: 'rgb(50,50,50)',
+        105: 'rgb(105,105,105)',
+        230: 'rgb(230,230,230)',
+      },
+      primary: 'rgb(235, 46, 150)',
+      lightBlue: 'rgb(233, 243, 253)'
+    }
   },
   plugins: [],
 }
