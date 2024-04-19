@@ -12,15 +12,16 @@ import { useSpring, animated } from '@react-spring/native'
 
 const Tab = createMaterialTopTabNavigator()
 
-const screens = [
-  { name: 'HomePage', component: HomePage, title: 'Momo', Icon: IconMomo, IconActive: IconMomoActive },
-  { name: 'Preference', component: Preference, title: 'Preference', Icon: IconGift, IconActive: IconGiftActive },
-  { name: 'History', component: History, title: 'History', Icon: IconHistory, IconActive: IconHistoryActive },
-  { name: 'Account', component: Account, title: 'Account', Icon: IconUser, IconActive: IconUserActive },
-]
 
 
 const Home = () => {
+
+  const screens = [
+    { name: 'HomePage', component: HomePage, title: 'Momo', Icon: IconMomo, IconActive: IconMomoActive },
+    { name: 'Preference', component: Preference, title: 'Preference', Icon: IconGift, IconActive: IconGiftActive },
+    { name: 'History', component: History, title: 'History', Icon: IconHistory, IconActive: IconHistoryActive },
+    { name: 'Account', component: Account, title: 'Account', Icon: IconUser, IconActive: IconUserActive },
+  ]
 
   return (
     <Tab.Navigator
