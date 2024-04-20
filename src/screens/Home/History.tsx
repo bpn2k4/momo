@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useIsFocused } from '@react-navigation/native'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { MaterialTopTabBarProps, createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { useSpring, animated } from '@react-spring/native'
@@ -91,7 +90,6 @@ const History = () => {
 
 const TabBar = (props: MaterialTopTabBarProps) => {
   const { state, descriptors, navigation } = props
-  const isFocused = useIsFocused()
   const windowWidth = Dimensions.get('window').width
 
   const [indicatorWidth, setIndicatorWidth] = useState(100)
@@ -127,17 +125,7 @@ const TabBar = (props: MaterialTopTabBarProps) => {
     }
   }, [currentTabIndex])
 
-  useLayoutEffect(() => {
-    if (isFocused && ref.current) {
-      ref.current.measure((x, y, width, height, pageX, pageY) => {
-        console.log(x, y);
-      })
-    }
-  }, [isFocused])
-
-  /**Listen scroll event of scrollview
-   * Change indicator position when scroll
-   */
+  /**Listen scroll event of scroll view change indicator position when scroll */
   const onScrollScrollView = () => {
     if (ref.current) {
       ref.current.measure((x, y, width, height, pageX, pageY) => {
@@ -146,7 +134,7 @@ const TabBar = (props: MaterialTopTabBarProps) => {
     }
   }
 
-  /**Perform indicator animation every time component re-render
+  /**@ Perform indicator animation every time component re-render
    * If this screen is not focused, function ref.current.measure can not run
    * so that indicatorPositionLeft will be NaN
    * So check indicatorPositionLeft is not NaN to perform indicator animation
@@ -189,7 +177,11 @@ const TabBar = (props: MaterialTopTabBarProps) => {
               ref={isFocused ? ref : null}
               activeOpacity={0.5}
               className='justify-center px-3 relative'
-              onLayout={e => { elementsWidth[index] = e.nativeEvent.layout.width }}
+              onLayout={e => {
+                console.log(index, e.nativeEvent.layout)
+                elementsWidth[index] = e.nativeEvent.layout.width
+                setIndicatorWidth(elementsWidth[currentTabIndex] - 20)
+              }}
               onPress={onPress}>
               <Text className='font-semibold text-transparent'>
                 {options.title}
