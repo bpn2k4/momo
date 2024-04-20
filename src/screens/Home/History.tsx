@@ -178,7 +178,6 @@ const TabBar = (props: MaterialTopTabBarProps) => {
               activeOpacity={0.5}
               className='justify-center px-3 relative'
               onLayout={e => {
-                console.log(index, e.nativeEvent.layout)
                 elementsWidth[index] = e.nativeEvent.layout.width
                 setIndicatorWidth(elementsWidth[currentTabIndex] - 20)
               }}

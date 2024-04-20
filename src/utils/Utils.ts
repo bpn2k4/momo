@@ -12,8 +12,8 @@ type SortKeysOption = {
   compare: boolean
 }
 
-export function sortKeys<T>(object: T, options: SortKeysOption): T {
-  const { deep, compare = true } = options
+export function sortKeys<T>(object: T, options: SortKeysOption = { deep: true, compare: true }): T {
+  const { deep, compare } = options
   const seenInput: any[] = []
   const seenOutput: any[] = []
 
