@@ -1,4 +1,4 @@
-import { Image, Pressable, View } from 'react-native'
+import { Image, Pressable, Text, View } from 'react-native'
 
 import iconBank from '@assets/icons/icon_bank.png'
 
@@ -14,6 +14,20 @@ const ItemHistory = (props: ItemHistoryProps) => {
           className='w-6 h-6'
           source={iconBank} />
       </View>
+      <View className='flex-1 flex flex-col ml-3'>
+        <Text className='font-semibold text-rgb-50' numberOfLines={2}>
+          Chuyển tiền/Thanh toán đến ZALOPAY_FKC(BVBank)
+        </Text>
+        <Text className='text-rgb-105 text-xs mt-1'>19:22 - 16/04/2024</Text>
+        <View className='flex flex-row justify-between mt-1'>
+          <Text className='text-rgb-105 text-xs'>
+            Số dư ví: ******
+          </Text>
+          <Text className='text-rgb-50 font-semibold'>
+            -12.000đ
+          </Text>
+        </View>
+      </View>
     </Pressable>
   )
 }
@@ -21,5 +35,8 @@ const ItemHistory = (props: ItemHistoryProps) => {
 export default ItemHistory
 
 type ItemHistoryProps = {
-  onPress?: VoidFunction
+  onPress?: VoidFunction,
+  title?: string,
+  datetime?: string,
+  monney?: number
 }

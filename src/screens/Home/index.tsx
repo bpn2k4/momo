@@ -1,5 +1,5 @@
 import { MaterialTopTabBarProps, createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { Animated, Dimensions, Pressable, Text, View } from 'react-native'
+import { Dimensions, Pressable, Text, View } from 'react-native'
 
 import HomePage from './HomePage'
 import History from './History'
@@ -51,7 +51,7 @@ const Home = () => {
 
 const BottomTab = (props: MaterialTopTabBarProps & { onPressQr?: VoidFunction }) => {
 
-  const { state, descriptors, navigation, position } = props
+  const { state, descriptors, navigation } = props
   const windowWidth = Dimensions.get('window').width
   const itemTabWidth = windowWidth / 5
   const indicatorWidth = 48
