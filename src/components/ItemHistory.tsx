@@ -23,7 +23,7 @@ const ItemHistory = (props: ItemHistoryProps) => {
           <Text className='text-rgb-105 text-xs'>
             Số dư ví: ******
           </Text>
-          <Text className='text-rgb-50 font-semibold'>
+          <Text className='text-rgb-50 font-bold'>
             -12.000đ
           </Text>
         </View>

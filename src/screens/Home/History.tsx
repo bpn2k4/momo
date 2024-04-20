@@ -93,7 +93,6 @@ const TabBar = (props: MaterialTopTabBarProps) => {
   const windowWidth = Dimensions.get('window').width
 
   const [indicatorWidth, setIndicatorWidth] = useState(100)
-  const [indicatorPositionLeft, setIndicatorPositionLeft] = useState(12)
   const [elementsWidth, _] = useState(state.routes.map(_ => 100))
 
   const ref = useRef<TouchableOpacity>(null)
@@ -101,47 +100,28 @@ const TabBar = (props: MaterialTopTabBarProps) => {
   const scrollViewRef = useRef<ScrollView>(null)
 
   const [style, spring] = useSpring(() => ({
-    left: indicatorPositionLeft
+    width: indicatorWidth
   }))
 
-  /**Calculate indicator width and position left when change tab
-   * Add {isFocused} because when app start, this component not be mounted
-   * so that indicator's width can not be recalculated
-   */
   useLayoutEffect(() => {
     if (ref.current) {
       ref.current.measure((x, y, width, height, pageX, pageY) => {
-        const scrollX = elementsWidth.slice(0, currentTabIndex).reduce((prev, item) => prev + item, 0) - windowWidth / 2 + width / 2
+        const newIndicatorWidth = width - 24
+        if (!isNaN(newIndicatorWidth)) {
+          setIndicatorWidth(newIndicatorWidth)
+        }
+        const scrollX = Math.max(0, elementsWidth.slice(0, currentTabIndex).reduce((prev, item) => prev + item, 0) - windowWidth / 2 + width / 2)
         scrollViewRef.current?.scrollTo({
           x: scrollX,
           animated: true
         })
-        const newIndicatorWidth = width - 20
-        if (!isNaN(newIndicatorWidth)) {
-          setIndicatorWidth(width - 20)
-          setIndicatorPositionLeft(pageX + 12)
-        }
       })
     }
   }, [currentTabIndex])
 
-  /**Listen scroll event of scroll view change indicator position when scroll */
-  const onScrollScrollView = () => {
-    if (ref.current) {
-      ref.current.measure((x, y, width, height, pageX, pageY) => {
-        setIndicatorPositionLeft(pageX + 12)
-      })
-    }
-  }
-
-  /**@ Perform indicator animation every time component re-render
-   * If this screen is not focused, function ref.current.measure can not run
-   * so that indicatorPositionLeft will be NaN
-   * So check indicatorPositionLeft is not NaN to perform indicator animation
-   */
-  if (!isNaN(indicatorPositionLeft)) {
+  if (!isNaN(indicatorWidth)) {
     spring.start({
-      left: indicatorPositionLeft,
+      width: indicatorWidth,
       config: {
         duration: 200
       }
@@ -149,12 +129,11 @@ const TabBar = (props: MaterialTopTabBarProps) => {
   }
 
   return (
-    <View className='w-full h-11 bg-white relative border-b border-rgb-235'>
+    <View className='w-full h-11 bg-white relative flex flex-col'>
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        ref={scrollViewRef}
-        onScroll={onScrollScrollView}>
+        ref={scrollViewRef}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key]
           const isFocused = state.index === index
@@ -176,7 +155,7 @@ const TabBar = (props: MaterialTopTabBarProps) => {
               key={index}
               ref={isFocused ? ref : null}
               activeOpacity={0.5}
-              className='justify-center px-3 relative'
+              className='justify-center px-3'
               onLayout={e => {
                 elementsWidth[index] = e.nativeEvent.layout.width
                 setIndicatorWidth(elementsWidth[currentTabIndex] - 20)
@@ -191,19 +170,23 @@ const TabBar = (props: MaterialTopTabBarProps) => {
                   {options.title}
                 </Text>
               </View>
+              {isFocused && (
+                <animated.View
+                  className='absolute h-[2px] bottom-0 z-[1]'
+                  style={{
+                    ...style,
+                    left: 12,
+                    height: 2,
+                    backgroundColor: Color.primary,
+                  }}>
+
+                </animated.View>
+              )}
             </TouchableOpacity>
           )
         })}
       </ScrollView>
-      <animated.View
-        className='absolute h-[2px] bottom-[1px]'
-        style={{
-          ...style,
-          height: 2,
-          width: indicatorWidth,
-          backgroundColor: Color.primary,
-        }}>
-      </animated.View>
+      <View className='w-full h-[1px] bg-rgb-235'></View>
     </View>
   )
 }

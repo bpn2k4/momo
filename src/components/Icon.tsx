@@ -17,49 +17,49 @@ type IconProps = {
 export const IconGift = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className='w-6 h-6'
+    className='w-[26px] h-[26px]'
     source={iconGift} />
 )
 export const IconGiftActive = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className='w-6 h-6'
+    className='w-[26px] h-[26px]'
     source={iconGiftActive} />
 )
 export const IconHistory = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className={'w-6 h-6'}
+    className={'w-[26px] h-[26px]'}
     source={iconHistory} />
 )
 export const IconHistoryActive = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className={'w-6 h-6'}
+    className={'w-[26px] h-[26px]'}
     source={iconHistoryActive} />
 )
 export const IconMomo = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className='w-6 h-6'
+    className='w-[26px] h-[26px]'
     source={iconMomo} />
 )
 export const IconMomoActive = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className='w-6 h-6'
+    className='w-[26px] h-[26px]'
     source={iconMomoActive} />
 )
 export const IconUser = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className='w-6 h-6'
+    className='w-[26px] h-[26px]'
     source={iconUser} />
 )
 export const IconUserActive = (props: IconProps) => (
   <Image
     style={[{ objectFit: 'contain' }, props?.style]}
-    className='w-6 h-6'
+    className='w-[26px] h-[26px]'
     source={iconUserActive} />
 )
 
