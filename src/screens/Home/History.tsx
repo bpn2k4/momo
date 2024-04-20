@@ -1,11 +1,12 @@
-import { MaterialTopTabBarProps, createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { useTranslation } from 'react-i18next'
-import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { useIsFocused } from '@react-navigation/native'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { MaterialTopTabBarProps, createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
+import { Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { useSpring, animated } from '@react-spring/native'
 
 import ItemHistory from '@components/ItemHistory'
-import { Color } from 'const'
-import { useLayoutEffect, useRef, useState } from 'react'
+import { Color } from '@const'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -90,34 +91,82 @@ const History = () => {
 
 const TabBar = (props: MaterialTopTabBarProps) => {
   const { state, descriptors, navigation } = props
+  const isFocused = useIsFocused()
+  const windowWidth = Dimensions.get('window').width
+
   const [indicatorWidth, setIndicatorWidth] = useState(100)
+  const [indicatorPositionLeft, setIndicatorPositionLeft] = useState(12)
+  const [elementsWidth, _] = useState(state.routes.map(_ => 100))
+
   const ref = useRef<TouchableOpacity>(null)
   const currentTabIndex = state.index
-  const indicatorPositionLeft = currentTabIndex * 100 + 100 / 2 - indicatorWidth / 2
-  const [elementsWidth, _] = useState(state.routes.map(_ => 100))
+  const scrollViewRef = useRef<ScrollView>(null)
 
   const [style, spring] = useSpring(() => ({
     left: indicatorPositionLeft
   }))
-  spring.start({
-    left: indicatorPositionLeft,
-    config: {
-      duration: 200
-    }
-  })
-  console.log(Math.random(), elementsWidth)
+
+  /**Calculate indicator width and position left when change tab
+   * Add {isFocused} because when app start, this component not be mounted
+   * so that indicator's width can not be recalculated
+   */
   useLayoutEffect(() => {
     if (ref.current) {
       ref.current.measure((x, y, width, height, pageX, pageY) => {
-        setIndicatorWidth(width)
+        const scrollX = elementsWidth.slice(0, currentTabIndex).reduce((prev, item) => prev + item, 0) - windowWidth / 2 + width / 2
+        scrollViewRef.current?.scrollTo({
+          x: scrollX,
+          animated: true
+        })
+        const newIndicatorWidth = width - 20
+        if (!isNaN(newIndicatorWidth)) {
+          setIndicatorWidth(width - 20)
+          setIndicatorPositionLeft(pageX + 12)
+        }
       })
     }
   }, [currentTabIndex])
 
+  useLayoutEffect(() => {
+    if (isFocused && ref.current) {
+      ref.current.measure((x, y, width, height, pageX, pageY) => {
+        console.log(x, y);
+      })
+    }
+  }, [isFocused])
+
+  /**Listen scroll event of scrollview
+   * Change indicator position when scroll
+   */
+  const onScrollScrollView = () => {
+    if (ref.current) {
+      ref.current.measure((x, y, width, height, pageX, pageY) => {
+        setIndicatorPositionLeft(pageX + 12)
+      })
+    }
+  }
+
+  /**Perform indicator animation every time component re-render
+   * If this screen is not focused, function ref.current.measure can not run
+   * so that indicatorPositionLeft will be NaN
+   * So check indicatorPositionLeft is not NaN to perform indicator animation
+   */
+  if (!isNaN(indicatorPositionLeft)) {
+    spring.start({
+      left: indicatorPositionLeft,
+      config: {
+        duration: 200
+      }
+    })
+  }
 
   return (
     <View className='w-full h-11 bg-white relative border-b border-rgb-235'>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        ref={scrollViewRef}
+        onScroll={onScrollScrollView}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key]
           const isFocused = state.index === index
@@ -126,9 +175,12 @@ const TabBar = (props: MaterialTopTabBarProps) => {
               type: 'tabPress',
               target: route.key,
               canPreventDefault: true,
-            });
+            })
             if (!isFocused && !event.defaultPrevented) {
               navigation.navigate(route.name, route.params)
+            }
+            else {
+              navigation.navigate(state.routes[0].name, route.params)
             }
           }
           return (

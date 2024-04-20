@@ -13,8 +13,8 @@
       "@components/*": [
         "src/components/*"
       ],
-      "@const/*": [
-        "src/const/*"
+      "@const": [
+        "src/const/index"
       ],
       "@hooks": [
         "src/hooks/index.ts"
