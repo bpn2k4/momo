@@ -31,6 +31,9 @@
       "@slices/*": [
         "src/slices/*"
       ],
+      "@utils": [
+        "src/utils/index"
+      ],
     }
   }
 }
