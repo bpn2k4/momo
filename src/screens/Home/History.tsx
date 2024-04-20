@@ -92,41 +92,26 @@ const TabBar = (props: MaterialTopTabBarProps) => {
   const { state, descriptors, navigation } = props
   const windowWidth = Dimensions.get('window').width
 
-  const [indicatorWidth, setIndicatorWidth] = useState(100)
-  const [elementsWidth, _] = useState(state.routes.map(_ => 100))
+  const [indicatorWidth, setIndicatorWidth] = useState(38)
+  const [elementsWidth, _] = useState(state.routes.map(_ => 38))
 
-  const ref = useRef<TouchableOpacity>(null)
+  const currentTabRef = useRef<TouchableOpacity>(null)
   const currentTabIndex = state.index
   const scrollViewRef = useRef<ScrollView>(null)
 
-  const [style, spring] = useSpring(() => ({
-    width: indicatorWidth
-  }))
-
   useLayoutEffect(() => {
-    if (ref.current) {
-      ref.current.measure((x, y, width, height, pageX, pageY) => {
+    if (currentTabRef.current) {
+      currentTabRef.current.measure((x, y, width, height, pageX, pageY) => {
         const newIndicatorWidth = width - 24
         if (!isNaN(newIndicatorWidth)) {
           setIndicatorWidth(newIndicatorWidth)
+          const distanceFromLeftToCurrentTab = elementsWidth.slice(0, currentTabIndex).reduce((prev, item) => prev + item, 0)
+          const scrollX = Math.max(distanceFromLeftToCurrentTab - windowWidth / 2 + width / 2, 0)
+          scrollViewRef.current?.scrollTo({ x: scrollX, animated: true })
         }
-        const scrollX = Math.max(0, elementsWidth.slice(0, currentTabIndex).reduce((prev, item) => prev + item, 0) - windowWidth / 2 + width / 2)
-        scrollViewRef.current?.scrollTo({
-          x: scrollX,
-          animated: true
-        })
       })
     }
   }, [currentTabIndex])
-
-  if (!isNaN(indicatorWidth)) {
-    spring.start({
-      width: indicatorWidth,
-      config: {
-        duration: 200
-      }
-    })
-  }
 
   return (
     <View className='w-full h-11 bg-white relative flex flex-col'>
@@ -135,8 +120,10 @@ const TabBar = (props: MaterialTopTabBarProps) => {
         showsHorizontalScrollIndicator={false}
         ref={scrollViewRef}>
         {state.routes.map((route, index) => {
+
           const { options } = descriptors[route.key]
           const isFocused = state.index === index
+
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
@@ -150,15 +137,16 @@ const TabBar = (props: MaterialTopTabBarProps) => {
               navigation.navigate(state.routes[0].name, route.params)
             }
           }
+
           return (
             <TouchableOpacity
               key={index}
-              ref={isFocused ? ref : null}
+              ref={isFocused ? currentTabRef : null}
               activeOpacity={0.5}
               className='justify-center px-3'
               onLayout={e => {
                 elementsWidth[index] = e.nativeEvent.layout.width
-                setIndicatorWidth(elementsWidth[currentTabIndex] - 20)
+                setIndicatorWidth(elementsWidth[currentTabIndex] - 24)
               }}
               onPress={onPress}>
               <Text className='font-semibold text-transparent'>
@@ -171,16 +159,15 @@ const TabBar = (props: MaterialTopTabBarProps) => {
                 </Text>
               </View>
               {isFocused && (
-                <animated.View
+                <View
                   className='absolute h-[2px] bottom-0 z-[1]'
                   style={{
-                    ...style,
                     left: 12,
+                    width: indicatorWidth,
                     height: 2,
                     backgroundColor: Color.primary,
                   }}>
-
-                </animated.View>
+                </View>
               )}
             </TouchableOpacity>
           )
