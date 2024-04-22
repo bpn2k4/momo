@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { MaterialTopTabBarProps, createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, ImageBackground, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useSpring, animated } from '@react-spring/native'
 
 import ItemHistory from '@components/ItemHistory'
 import { Color } from '@const'
+import imageHeaderBackgroundPink from '@assets/images/img_header_pink.png'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -69,9 +70,20 @@ const History = () => {
 
   return (
     <View className='flex-1'>
-      <View className='h-[84px]'>
-
-      </View>
+      <ImageBackground
+        className='h-[84px] flex flex-col'
+        source={imageHeaderBackgroundPink}
+        resizeMode='cover'>
+        <View className='flex-1'></View>
+        <View className='h-[52px] flex flex-row items-center px-3'>
+          <View className='flex-1 h-8 rounded-full overflow-hidden bg-white border border-rgb-235'>
+            <TextInput
+              className='w-full h-full ml-10'
+              placeholderTextColor='rgb(115,115,115)'
+              placeholder='Tìm kiếm giao dịch' />
+          </View>
+        </View>
+      </ImageBackground>
       <Tab.Navigator
         tabBar={props => <TabBar {...props} />}>
         {tabs.map(({ name, Component }, index) => (
